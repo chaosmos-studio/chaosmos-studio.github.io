@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="theme-color" content="#0d1127">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Carillon">
+		<meta name="description" content="Tap a dot and its ring pops every dot it reaches, in turn. Every pop is a note.">
+		<link rel="icon" href="favicon.ico" sizes="any">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+		<title>Carillon</title>
+		<style>
+/* Loading screen. The Godot boilerplate below is unchanged from a known-good 4.7 shell; only the
+   presentation is ours: the game's night sky, its wordmark, and a chain of five dots popping in turn. */
+@font-face {
+	font-family: 'Outfit';
+	src: url('Outfit-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-display: block;
+}
+:root {
+	--top: #161c3a; --bottom: #0d1127; --ink: #e8ebff; --muted: #8089bd; --accent: #7fd0ff;
+	--coral: #ff7b8e; --amber: #ffc866; --mint: #6cf0c2; --sky: #6ec8ff; --lavender: #b89dff;
+}
+* { box-sizing: border-box; }
+html, body {
+	margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--bottom);
+	font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#canvas { display: block; width: 100%; height: 100%; border: 0; }
+#canvas:focus { outline: none; }
+#status {
+	position: fixed; inset: 0; z-index: 10; visibility: visible;
+	background: linear-gradient(var(--top), var(--bottom));
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
+}
+#brand h1 {
+	margin: 0; font-size: clamp(64px, 20vw, 130px); font-weight: 300; color: var(--ink); line-height: 1;
+	text-shadow: 0 0 40px rgba(127, 208, 255, 0.25);
+}
+#brand p {
+	margin: 10px 0 0; text-align: center; font-size: clamp(12px, 3.4vw, 15px); color: var(--muted);
+	text-transform: uppercase; letter-spacing: 0.22em;
+}
+#toy { position: relative; width: 240px; height: 70px; }
+.note { position: absolute; top: 23px; width: 24px; height: 24px; }
+.dot, .ring { position: absolute; inset: 0; border-radius: 50%; }
+.dot {
+	background: var(--c); box-shadow: 0 0 16px 2px var(--c);
+	animation: pop 2.6s ease-in-out infinite; animation-delay: var(--d);
+}
+.ring {
+	border: 2px solid var(--c); opacity: 0;
+	animation: ring 2.6s ease-out infinite; animation-delay: var(--d);
+}
+@keyframes pop {
+	0%, 8% { transform: scale(1); opacity: 1; background: var(--c); }
+	11% { transform: scale(1.3); background: #fff; }
+	20% { transform: scale(0); opacity: 0; }
+	78% { transform: scale(0); opacity: 0; }
+	90%, 100% { transform: scale(1); opacity: 1; }
+}
+@keyframes ring {
+	0%, 9% { transform: scale(1); opacity: 0; }
+	11% { opacity: 0.9; }
+	40% { transform: scale(4.4); opacity: 0; }
+	100% { transform: scale(4.4); opacity: 0; }
+}
+#status-progress {
+	appearance: none; -webkit-appearance: none; border: 0;
+	width: min(300px, 76vw); height: 12px; border-radius: 99px; display: block;
+}
+#status-progress::-webkit-progress-bar { background: #262f66; border-radius: 99px; }
+#status-progress::-webkit-progress-value { background: var(--accent); border-radius: 99px; }
+#status-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
+#status-notice {
+	display: none; max-width: 86vw; padding: 16px 20px; border-radius: 18px; background: #1b2250;
+	color: var(--ink); white-space: pre-line; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+@media (prefers-reduced-motion: reduce) { .dot, .ring { animation: none; } }
+		</style>
+		
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+		<div id="status">
+			<div id="brand">
+				<h1>carillon</h1>
+				<p>every pop is a note</p>
+			</div>
+			<div id="toy">
+				<div class="note" style="left: 0; --c: var(--coral); --d: 0s"><div class="ring"></div><div class="dot"></div></div>
+				<div class="note" style="left: 54px; --c: var(--amber); --d: 0.16s"><div class="ring"></div><div class="dot"></div></div>
+				<div class="note" style="left: 108px; --c: var(--mint); --d: 0.32s"><div class="ring"></div><div class="dot"></div></div>
+				<div class="note" style="left: 162px; --c: var(--sky); --d: 0.48s"><div class="ring"></div><div class="dot"></div></div>
+				<div class="note" style="left: 216px; --c: var(--lavender); --d: 0.64s"><div class="ring"></div><div class="dot"></div></div>
+			</div>
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":3553184,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>
+
