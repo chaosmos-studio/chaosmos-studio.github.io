@@ -197,7 +197,7 @@ const engine = new Engine(GODOT_CONFIG);
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
-		window.chaosmosGate.then(() => {
+		(window.chaosmosGate || Promise.resolve()).then(() => {
 			setStatusMode('progress');
 			engine.startGame({
 				'onProgress': function (current, total) {
