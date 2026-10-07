@@ -1,7 +1,7 @@
 {
   "name": "Chaosmos",
   "short_name": "Chaosmos",
-  "description": "Chaosmos makes puzzle games for Android and the web.",
+  "description": "Chaosmos is a small studio making calm, clever puzzle games, one at a time.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fbfbfd",
