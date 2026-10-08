@@ -2,9 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://chaosmos.studio/sitemap-index.xml
-Sitemap: https://chaosmos.studio/plumb/sitemap-index.xml
-Sitemap: https://chaosmos.studio/plumb/sitemap-images.xml
-Sitemap: https://chaosmos.studio/carillon/sitemap-index.xml
-Sitemap: https://chaosmos.studio/carillon/sitemap-images.xml
-Sitemap: https://chaosmos.studio/apsis/sitemap-index.xml
-Sitemap: https://chaosmos.studio/apsis/sitemap-images.xml
+Sitemap: https://chaosmos.studio/sitemap-images.xml
