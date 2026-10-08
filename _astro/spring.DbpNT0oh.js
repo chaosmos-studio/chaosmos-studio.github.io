@@ -1,0 +1,1 @@
+var e=class{value;stiffness;damping;velocity=0;target;constructor(e,t,n){this.value=e,this.stiffness=t,this.damping=n,this.target=e}step(e){this.velocity+=(this.stiffness*(this.target-this.value)-this.damping*this.velocity)*e,this.value+=this.velocity*e}get resting(){return Math.abs(this.target-this.value)<.001&&Math.abs(this.velocity)<.001}};export{e as t};
