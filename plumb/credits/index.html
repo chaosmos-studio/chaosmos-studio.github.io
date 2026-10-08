@@ -3,6 +3,8 @@
         const saved = localStorage.getItem("theme");
         if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
       } catch {}
+      // Dotted words hide their text before the first paint, so it never flashes before the dots draw it.
+      document.documentElement.classList.add("dots");
       // The wordmark's water pours in once a visit, not on every page.
       try {
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !sessionStorage.getItem("poured")) {
