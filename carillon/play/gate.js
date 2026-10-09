@@ -1,9 +1,7 @@
-// The gate on the web build, the same file in every Chaosmos game. The web build is there for iPhone, iPad
-// and computers, since there is no iOS app yet. An Android phone or tablet has the app, so its loading screen
-// points to the game on Google Play, or to its page until the listing is public, and the engine never
-// downloads. Where each game stands comes from the studio site's games.json, so a launch there opens every
-// gate at once. `?play` lets the game through on Android too, for testing. The shell starts the engine when
-// window.chaosmosGate settles.
+// The same file in every Chaosmos game. The web build is for iPhone, iPad and computers, since there is no
+// iOS app yet. On Android the loading screen points to Google Play instead and the engine never downloads.
+// The studio site's games.json says where each game stands, so a launch there opens every gate at once.
+// `?play` lets Android through for testing. The shell starts the engine when window.chaosmosGate settles.
 window.chaosmosGate = (function () {
 	const name = document.currentScript.dataset.game;
 	if (!/Android/i.test(navigator.userAgent) || new URLSearchParams(location.search).has('play')) {
