@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en" data-astro-cid-gwbtivf5><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Carillon</title><meta name="robots" content="noindex"><link rel="canonical" href="https://chaosmos.studio/carillon/"><link rel="icon" href="/assets/apps/carillon.webp"><script>(function(){const store = null;
 const web = "/carillon/play/";
 const home = "/carillon/";
+const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatcounterScript":"https://gc.zgo.at/count.js","umamiScript":"https://cloud.umami.is/script.js","umamiWebsite":"284549b9-2ef0-4485-ae9d-2e2e85f7e0ac","domain":"chaosmos.studio"};
 
       const asked = new URLSearchParams(location.search).get("from") ?? "";
       const from = asked.replace(/[^\w.-]/g, "").slice(0, 40) || "direct";
@@ -10,6 +11,26 @@ const home = "/carillon/";
       let to = `${home}?from=${from}`;
       if (ios) to = web;
       else if (android && store) to = `${store}&referrer=${encodeURIComponent(`utm_source=${from}&utm_medium=get`)}`;
-      location.replace(to);
+      // Each counter sends its visit in a way that outlives the page, so the hop waits only for it to start.
+      const counted = (src, attributes) =>
+        new Promise((done) => {
+          const script = document.createElement("script");
+          script.src = src;
+          script.async = true;
+          for (const [name, value] of Object.entries(attributes)) script.setAttribute(name, value);
+          script.onload = script.onerror = () => setTimeout(done, 60);
+          document.head.appendChild(script);
+        });
+      const counting =
+        location.hostname === counters.domain
+          ? Promise.all([
+              counted(counters.goatcounterScript, {
+                "data-goatcounter": counters.goatcounter,
+                "data-goatcounter-settings": JSON.stringify({ path: `${location.pathname}?from=${from}` }),
+              }),
+              counted(counters.umamiScript, { "data-website-id": counters.umamiWebsite, "data-domains": counters.domain }),
+            ])
+          : Promise.resolve();
+      Promise.race([counting, new Promise((done) => setTimeout(done, 900))]).then(() => location.replace(to));
     })();</script><style>:root{--bg: #fbfbfd;--ink: #141414;--muted: #5c5c66;color-scheme:light dark}@media(prefers-color-scheme:dark){:root{--bg: #121212;--ink: #f4f4f6;--muted: #a3a3ad}}body{display:grid;place-items:center;min-height:100svh;margin:0;padding:1.5rem;box-sizing:border-box;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,sans-serif;text-align:center}main[data-astro-cid-gwbtivf5]{display:grid;justify-items:center;gap:.9rem;max-width:22rem}img[data-astro-cid-gwbtivf5]{border-radius:22px}h1[data-astro-cid-gwbtivf5]{margin:0;font-size:2rem;letter-spacing:-.02em}p[data-astro-cid-gwbtivf5]{margin:0;color:var(--muted)}a[data-astro-cid-gwbtivf5],span[data-astro-cid-gwbtivf5]{display:block;width:100%;padding:.85rem 1.2rem;box-sizing:border-box;border:1px solid var(--ink);border-radius:999px;color:var(--ink);font-weight:600;text-decoration:none}.solid[data-astro-cid-gwbtivf5]{background:var(--ink);color:var(--bg)}
 </style></head><body data-astro-cid-gwbtivf5><main data-astro-cid-gwbtivf5><img src="/assets/apps/carillon.webp" alt="" width="88" height="88" data-astro-cid-gwbtivf5><h1 data-astro-cid-gwbtivf5>Carillon</h1><p data-astro-cid-gwbtivf5>Tap a dot and its ring pops its neighbours. Every pop is a note, so every chain plays a tune.</p><span class="solid" data-astro-cid-gwbtivf5>Coming soon to Google Play</span><a href="/carillon/" data-astro-cid-gwbtivf5>About Carillon</a></main></body></html>
