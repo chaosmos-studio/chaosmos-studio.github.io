@@ -5,9 +5,7 @@
       } catch {}
       // Dotted words hide their text before the first paint, so it never flashes before the dots draw it.
       document.documentElement.classList.add("dots");
-      // Which way to get the game suits this device: an Android phone installs the app, an iPhone or iPad has
-      // no app yet and plays on the page, and a computer has both. An iPad calls itself a Mac, and only its
-      // touch screen gives it away.
+      // An iPad calls itself a Mac, and only its touch screen gives it away.
       if (/Android/.test(navigator.userAgent)) document.documentElement.classList.add("android");
       else if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1))
         document.documentElement.classList.add("ios");
@@ -16,7 +14,6 @@
       setTimeout(() => {
         if (!document.documentElement.classList.contains("arrive-live")) document.documentElement.classList.remove("arrive");
       }, 3000);
-      // The wordmark's water pours in once a visit, not on every page.
       try {
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !sessionStorage.getItem("poured")) {
           sessionStorage.setItem("poured", "1");
