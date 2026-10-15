@@ -1,0 +1,1 @@
+import{i as e}from"./tangle.2qQp-Z8e.js";import{t}from"./loom.Cd4mlEeB.js";for(let n of document.querySelectorAll(`svg[data-loom]:not([data-hero])`)){let{loom:r=``,follow:i,still:a}=n.dataset;t(n,{webs:r.split(`,`).map(t=>e[Number(t)]),follow:i===`witness`?`witness`:`route`,hint:n.hasAttribute(`data-hint`),ghosts:n.hasAttribute(`data-ghosts`),still:a===`end`?`end`:`start`})}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="theme-color" content="#f7f7f2">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Pyxis">
+		<meta name="description" content="Pyxis: drag the knots until no strands cross. A calm untangling puzzle.">
+		<meta name="robots" content="noindex">
+		<!-- The studio's two cookie-free visit counters, as on chaosmos.studio. -->
+		<script async data-goatcounter="https://chaosmos.goatcounter.com/count" src="https://gc.zgo.at/count.js"></script>
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="284549b9-2ef0-4485-ae9d-2e2e85f7e0ac" data-domains="chaosmos.studio"></script>
+		<link rel="icon" href="favicon.ico" sizes="any">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+		<title>Pyxis</title>
+		<style>
+/* The Godot boilerplate below is a known-good 4.7 shell with one change: it starts the engine once the
+   gate (gate.js) lets it. */
+@font-face {
+	font-family: 'Outfit';
+	src: url('Outfit-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-display: block;
+}
+:root { --paper: #f7f7f2; --surface: #ffffff; --ink: #263238; --muted: #59666d; --track: #dfe4e4; --accent: #236b8e;
+	--accent-ink: #ffffff; --rust: #a34b32; }
+* { box-sizing: border-box; }
+html, body {
+	margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--paper);
+	font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#canvas { display: block; width: 100%; height: 100%; border: 0; }
+#canvas:focus { outline: none; }
+#status {
+	position: fixed; inset: 0; z-index: 10; visibility: visible; background: var(--paper);
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+}
+#brand h1 { margin: 0; font-size: clamp(72px, 24vw, 150px); font-weight: 300; color: var(--ink); line-height: 1; }
+#brand p { margin: 4px 0 0; text-align: center; font-size: clamp(16px, 4.4vw, 22px); color: var(--muted); }
+/* The icon's little web: the rust crossing pulls apart and the loop settles, over and over. */
+#toy { width: 96px; height: 96px; }
+#toy .loop { stroke: var(--accent); stroke-width: 4; fill: none; }
+#toy .cross { stroke: var(--rust); stroke-width: 4; animation: clear 2.6s ease-in-out infinite; }
+#toy circle { fill: var(--surface); stroke: var(--accent); stroke-width: 3; }
+@keyframes clear {
+	0%, 20% { opacity: 1; }
+	45%, 75% { opacity: 0; }
+	100% { opacity: 1; }
+}
+#status-progress {
+	appearance: none; -webkit-appearance: none; border: 0;
+	width: min(300px, 76vw); height: 16px; border-radius: 99px; display: block;
+}
+#status-progress::-webkit-progress-bar { background: var(--track); border-radius: 99px; }
+#status-progress::-webkit-progress-value { background: var(--accent); border-radius: 99px; }
+#status-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
+#status-notice {
+	display: none; max-width: 86vw; padding: 16px 20px; border-radius: 18px; background: var(--surface);
+	color: var(--ink); white-space: pre-line; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+@media (prefers-reduced-motion: reduce) { #toy .cross { animation: none; } }
+		</style>
+		
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+		<div id="status">
+			<div id="brand">
+				<h1>pyxis</h1>
+				<p>untangle every strand</p>
+			</div>
+			<svg id="toy" viewBox="0 0 100 100" aria-hidden="true">
+				<line class="cross" x1="26" y1="30" x2="75" y2="71"/>
+				<line class="cross" x1="73" y1="26" x2="29" y2="73"/>
+				<polygon class="loop" points="26,30 73,26 75,71 29,73"/>
+				<circle cx="26" cy="30" r="8"/><circle cx="73" cy="26" r="8"/>
+				<circle cx="75" cy="71" r="8"/><circle cx="29" cy="73" r="8"/>
+			</svg>
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<script src="gate.js" data-game="Pyxis"></script>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":3030204,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		(window.chaosmosGate || Promise.resolve()).then(() => {
+			setStatusMode('progress');
+			engine.startGame({
+				'onProgress': function (current, total) {
+					if (current > 0 && total > 0) {
+						statusProgress.value = current;
+						statusProgress.max = total;
+					} else {
+						statusProgress.removeAttribute('value');
+						statusProgress.removeAttribute('max');
+					}
+				},
+			}).then(() => {
+				setStatusMode('hidden');
+			}, displayFailureNotice);
+		});
+	}
+}());
+		</script>
+	</body>
+</html>
+
