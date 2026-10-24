@@ -1,220 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>Rinse</title>
-		<style>
-html, body, #canvas {
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-body {
-	color: white;
-	background-color: black;
-	overflow: hidden;
-	touch-action: none;
-}
-
-#canvas {
-	display: block;
-}
-
-#canvas:focus {
-	outline: none;
-}
-
-#status, #status-splash, #status-progress {
-	position: absolute;
-	left: 0;
-	right: 0;
-}
-
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
-
-#status {
-	background-color: #242424;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
-
-#status-splash {
-	max-height: 100%;
-	max-width: 100%;
-	margin: auto;
-}
-
-#status-splash.show-image--false {
-	display: none;
-}
-
-#status-splash.fullsize--true {
-	height: 100%;
-	width: 100%;
-	object-fit: contain;
-}
-
-#status-splash.use-filter--false {
-	image-rendering: pixelated;
-}
-
-#status-progress, #status-notice {
-	display: none;
-}
-
-#status-progress {
-	bottom: 10%;
-	width: 50%;
-	margin: 0 auto;
-}
-
-#status-notice {
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
-	text-align: center;
-	z-index: 1;
-}
-		</style>
-		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex"><meta name="theme-color" content="#b9e2ee"><meta name="description" content="A cleaning puzzle where the dirty water runs downhill. In development at Chaosmos."><title>Rinse</title>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(#b9e2ee,#f5efe3);color:#1c4b57;font:16px system-ui,sans-serif}canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}#loading{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(#b9e2ee,#f5efe3);z-index:10;transition:opacity .35s}#loading.done{opacity:0;pointer-events:none}.card{max-width:380px;padding:32px;text-align:center}.logo{width:128px;height:128px;filter:drop-shadow(0 12px 24px rgba(28,75,87,.2))}h1{font-size:30px;font-weight:650;margin:22px 0 6px}p{line-height:1.5;color:#3f7280;margin:0 0 18px}progress{width:200px;height:4px;accent-color:#1f7fb5}#error{display:none;white-space:pre-wrap;font-size:14px}button{border:0;background:#1c4b57;color:#f5efe3;border-radius:12px;padding:12px 24px;font:inherit;cursor:pointer}</style>
+<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
 
-	</head>
-	<body>
-		<canvas id="canvas">
-			Your browser does not support the canvas tag.
-		</canvas>
-
-		<noscript>
-			Your browser does not support JavaScript.
-		</noscript>
-
-		<div id="status">
-			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="index.png" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
-		</div>
-
-		<script src="index.js"></script>
-		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":185064,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const GODOT_THREADS_ENABLED = false;
-const engine = new Engine(GODOT_CONFIG);
-
-(function () {
-	const statusOverlay = document.getElementById('status');
-	const statusProgress = document.getElementById('status-progress');
-	const statusNotice = document.getElementById('status-notice');
-
-	let initializing = true;
-	let statusMode = '';
-
-	function setStatusMode(mode) {
-		if (statusMode === mode || !initializing) {
-			return;
-		}
-		if (mode === 'hidden') {
-			statusOverlay.remove();
-			initializing = false;
-			return;
-		}
-		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-		statusMode = mode;
-	}
-
-	function setStatusNotice(text) {
-		while (statusNotice.lastChild) {
-			statusNotice.removeChild(statusNotice.lastChild);
-		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
-			statusNotice.appendChild(document.createTextNode(line));
-			statusNotice.appendChild(document.createElement('br'));
-		});
-	}
-
-	function displayFailureNotice(err) {
-		console.error(err);
-		if (err instanceof Error) {
-			setStatusNotice(err.message);
-		} else if (typeof err === 'string') {
-			setStatusNotice(err);
-		} else {
-			setStatusNotice('An unknown error occurred.');
-		}
-		setStatusMode('notice');
-		initializing = false;
-	}
-
-	const missing = Engine.getMissingFeatures({
-		threads: GODOT_THREADS_ENABLED,
-	});
-
-	if (missing.length !== 0) {
-		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-			let serviceWorkerRegistrationPromise;
-			try {
-				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
-			} catch (err) {
-				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
-			}
-			// There's a chance that installing the service worker would fix the issue
-			Promise.race([
-				serviceWorkerRegistrationPromise.then((registration) => {
-					if (registration != null) {
-						return Promise.reject(new Error('Service worker already exists.'));
-					}
-					return registration;
-				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
-				new Promise((resolve) => {
-					setTimeout(() => resolve(), 2000);
-				}),
-			]).then(() => {
-				// Reload if there was no error.
-				window.location.reload();
-			}).catch((err) => {
-				console.error('Error while registering service worker:', err);
-			});
-		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-			displayFailureNotice(missingMsg + missing.join('\n'));
-		}
-	} else {
-		setStatusMode('progress');
-		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-		}).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
-	}
-}());
-		</script>
-	</body>
-</html>
+</head><body>
+<canvas id="canvas" tabindex="0" aria-label="Rinse">Your browser needs canvas support.</canvas>
+<!-- The logo is web/logo.svg, inlined so it shows before anything else loads. -->
+<div id="loading" role="status"><div class="card"><svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+  <defs>
+    <linearGradient id="rn-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b9e2ee"/>
+      <stop offset="1" stop-color="#f5efe3"/>
+    </linearGradient>
+    <linearGradient id="rn-drop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5cc3ec"/>
+      <stop offset="1" stop-color="#1f7fb5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#rn-bg)"/>
+  <path d="M256 64 C256 64 158 178 158 246 C158 300 202 340 256 340 C310 340 354 300 354 246 C354 178 256 64 256 64 Z" fill="url(#rn-drop)"/>
+  <path d="M206 236 C206 206 226 176 240 160 C232 196 228 222 232 252 C222 258 206 252 206 236 Z" fill="#ffffff" fill-opacity="0.7"/>
+  <g>
+    <rect x="96" y="372" width="78" height="62" rx="6" fill="#ffffff"/>
+    <rect x="182" y="372" width="78" height="62" rx="6" fill="#ffffff"/>
+    <rect x="268" y="372" width="78" height="62" rx="6" fill="#d9cfc2"/>
+    <rect x="354" y="372" width="62" height="62" rx="6" fill="#d9cfc2"/>
+    <path d="M268 380 Q300 366 330 378 Q360 368 380 376 Q404 366 416 378 L416 402 Q392 396 370 404 Q340 394 312 404 Q288 396 268 404 Z" fill="#8a6440"/>
+    <circle cx="300" cy="418" r="7" fill="#8a6440"/>
+    <circle cx="382" cy="420" r="5" fill="#8a6440"/>
+  </g>
+  <path d="M136 312 L144 334 L166 342 L144 350 L136 372 L128 350 L106 342 L128 334 Z" fill="#ffffff"/>
+  <path d="M200 324 L204 334 L214 338 L204 342 L200 352 L196 342 L186 338 L196 334 Z" fill="#ffffff" fill-opacity="0.85"/>
+</svg><h1>Rinse</h1><p id="status">Filling the tank.</p><progress id="progress" max="1" value="0"></progress><p id="error"></p><button id="retry" hidden onclick="location.reload()">Try again</button></div></div>
+<noscript>Rinse needs JavaScript enabled.</noscript>
+<script src="index.js"></script>
+<script>
+const canvas=document.getElementById('canvas');
+const engine=new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":264176,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+function fail(error){document.getElementById('status').textContent='Rinse could not start.';const el=document.getElementById('error');el.style.display='block';el.textContent=String(error)+'\nUse a browser with WebGL 2 and WebAssembly.';document.getElementById('retry').hidden=false;}
+const missing=Engine.getMissingFeatures({threads:false});
+if(missing.length){fail(missing.join(', '))}else{engine.startGame({canvas,onProgress:(n,total)=>{if(total)document.getElementById('progress').value=n/total}}).then(()=>{document.getElementById('loading').classList.add('done');canvas.focus()}).catch(fail)}
+</script></body></html>
 
