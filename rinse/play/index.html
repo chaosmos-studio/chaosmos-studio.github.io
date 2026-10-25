@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="theme-color" content="#eef5f6">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Rinse">
+		<meta name="description" content="Rinse: wash every tile clean before the water runs out.">
+		<meta name="robots" content="noindex">
+		<!-- The studio's two cookie-free visit counters, as on chaosmos.studio. -->
+		<script async data-goatcounter="https://chaosmos.goatcounter.com/count" src="https://gc.zgo.at/count.js"></script>
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="284549b9-2ef0-4485-ae9d-2e2e85f7e0ac" data-domains="chaosmos.studio"></script>
+		<link rel="icon" href="favicon.ico" sizes="any">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+		<title>Rinse</title>
+		<style>
+/* The Godot boilerplate below is a known-good 4.7 shell with one change: it starts the engine once the
+   gate (gate.js) lets it. Plumb, Carillon, Apsis and Pyxis each put a small CSS version of their own toy
+   here. A dark --accent needs a light --accent-ink for the gate's button. */
+@font-face {
+	font-family: 'Outfit';
+	src: url('Outfit-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-display: block;
+}
+:root { --paper: #eef5f6; --surface: #ffffff; --ink: #163640; --muted: #4d6a74; --track: #d3e3e7; --accent: #1a78a6; }
+* { box-sizing: border-box; }
+html, body {
+	margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--paper);
+	font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#canvas { display: block; width: 100%; height: 100%; border: 0; }
+#canvas:focus { outline: none; }
+#status {
+	position: fixed; inset: 0; z-index: 10; visibility: visible; background: var(--paper);
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+}
+#brand h1 { margin: 0; font-size: clamp(72px, 24vw, 150px); font-weight: 300; color: var(--ink); line-height: 1; }
+#brand p { margin: 4px 0 0; text-align: center; font-size: clamp(16px, 4.4vw, 22px); color: var(--muted); }
+/* The logo, web/logo.svg inlined so it shows before anything else loads: its drop bobs over the tiles and the
+   crust on the last two fades and returns, a rinse that never quite finishes while the game loads. */
+#logo { width: clamp(120px, 34vw, 168px); height: auto; filter: drop-shadow(0 12px 24px rgba(22, 54, 64, .18)); }
+#logo .drop { animation: bob 2.4s ease-in-out infinite; transform-origin: 256px 340px; }
+#logo .crust { animation: wash 2.4s ease-in-out infinite; }
+@keyframes bob {
+	0%, 100% { transform: translateY(-14px); }
+	45% { transform: translateY(6px) scale(1.04, 0.96); }
+	60% { transform: translateY(0); }
+}
+@keyframes wash {
+	0%, 40% { opacity: 1; }
+	60%, 85% { opacity: 0.15; }
+	100% { opacity: 1; }
+}
+#status-progress {
+	appearance: none; -webkit-appearance: none; border: 0;
+	width: min(300px, 76vw); height: 16px; border-radius: 99px; display: block;
+}
+#status-progress::-webkit-progress-bar { background: var(--track); border-radius: 99px; }
+#status-progress::-webkit-progress-value { background: var(--accent); border-radius: 99px; }
+#status-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
+#status-notice {
+	display: none; max-width: 86vw; padding: 16px 20px; border-radius: 18px; background: var(--surface);
+	color: var(--ink); white-space: pre-line; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+@media (prefers-reduced-motion: reduce) { #logo .drop, #logo .crust { animation: none; } }
+		</style>
+		
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+		<div id="status">
+			<div id="brand">
+				<h1>rinse</h1>
+				<p>wash every tile clean</p>
+			</div>
+			<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+				<defs>
+					<linearGradient id="rn-bg" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#b9e2ee"/>
+						<stop offset="1" stop-color="#f5efe3"/>
+					</linearGradient>
+					<linearGradient id="rn-drop" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#5cc3ec"/>
+						<stop offset="1" stop-color="#1f7fb5"/>
+					</linearGradient>
+				</defs>
+				<rect width="512" height="512" rx="112" fill="url(#rn-bg)"/>
+				<g class="drop">
+					<path d="M256 64 C256 64 158 178 158 246 C158 300 202 340 256 340 C310 340 354 300 354 246 C354 178 256 64 256 64 Z" fill="url(#rn-drop)"/>
+					<path d="M206 236 C206 206 226 176 240 160 C232 196 228 222 232 252 C222 258 206 252 206 236 Z" fill="#ffffff" fill-opacity="0.7"/>
+				</g>
+				<rect x="96" y="372" width="78" height="62" rx="6" fill="#ffffff"/>
+				<rect x="182" y="372" width="78" height="62" rx="6" fill="#ffffff"/>
+				<rect x="268" y="372" width="78" height="62" rx="6" fill="#d9cfc2"/>
+				<rect x="354" y="372" width="62" height="62" rx="6" fill="#d9cfc2"/>
+				<g class="crust">
+					<path d="M268 380 Q300 366 330 378 Q360 368 380 376 Q404 366 416 378 L416 402 Q392 396 370 404 Q340 394 312 404 Q288 396 268 404 Z" fill="#8a6440"/>
+					<circle cx="300" cy="418" r="7" fill="#8a6440"/>
+					<circle cx="382" cy="420" r="5" fill="#8a6440"/>
+				</g>
+				<path d="M136 312 L144 334 L166 342 L144 350 L136 372 L128 350 L106 342 L128 334 Z" fill="#ffffff"/>
+				<path d="M200 324 L204 334 L214 338 L204 342 L200 352 L196 342 L186 338 L196 334 Z" fill="#ffffff" fill-opacity="0.85"/>
+			</svg>
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<script src="gate.js" data-game="Rinse"></script>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":910028,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		(window.chaosmosGate || Promise.resolve()).then(() => {
+			setStatusMode('progress');
+			engine.startGame({
+				'onProgress': function (current, total) {
+					if (current > 0 && total > 0) {
+						statusProgress.value = current;
+						statusProgress.max = total;
+					} else {
+						statusProgress.removeAttribute('value');
+						statusProgress.removeAttribute('max');
+					}
+				},
+			}).then(() => {
+				setStatusMode('hidden');
+			}, displayFailureNotice);
+		});
+	}
+}());
+		</script>
+	</body>
+</html>
+
