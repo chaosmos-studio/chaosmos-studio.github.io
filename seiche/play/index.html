@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="theme-color" content="#eef7f4">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Seiche">
+		<meta name="description" content="Seiche: every ring touches a fish.">
+		<meta name="robots" content="noindex">
+		<!-- The studio's two cookie-free visit counters, as on chaosmos.studio. -->
+		<script async data-goatcounter="https://chaosmos.goatcounter.com/count" src="https://gc.zgo.at/count.js"></script>
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="284549b9-2ef0-4485-ae9d-2e2e85f7e0ac" data-domains="chaosmos.studio"></script>
+		<link rel="icon" href="favicon.ico" sizes="any">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+		<title>Seiche</title>
+		<style>
+/* The Godot boilerplate below is a known-good 4.7 shell with one change: it starts the engine once the
+   gate (gate.js) lets it. Seiche's loading page shows its logo, web/logo.svg inlined, its two rings
+   breathing and its fish bobbing where they meet. */
+@font-face {
+	font-family: 'Outfit';
+	src: url('Outfit-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-display: block;
+}
+:root { --paper: #eef7f4; --surface: #ffffff; --ink: #17312f; --muted: #53716d; --track: #d5ebe5; --accent: #2a8c86; }
+* { box-sizing: border-box; }
+html, body {
+	margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--paper);
+	font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#canvas { display: block; width: 100%; height: 100%; border: 0; }
+#canvas:focus { outline: none; }
+#status {
+	position: fixed; inset: 0; z-index: 10; visibility: visible; background: var(--paper);
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+}
+#brand h1 { margin: 0; font-size: clamp(72px, 24vw, 150px); font-weight: 300; color: var(--ink); line-height: 1; }
+#brand p { margin: 4px 0 0; text-align: center; font-size: clamp(16px, 4.4vw, 22px); color: var(--muted); }
+#logo { width: min(168px, 44vw); height: auto; filter: drop-shadow(0 12px 24px rgba(23, 49, 47, .16)); }
+#logo .ring { transform-box: fill-box; transform-origin: center; animation: breathe 3.2s ease-in-out infinite; }
+#logo .ring + .ring { animation-delay: 1.6s; }
+#logo .fish { animation: bob 2.4s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+#status-progress {
+	appearance: none; -webkit-appearance: none; border: 0;
+	width: min(300px, 76vw); height: 16px; border-radius: 99px; display: block;
+}
+#status-progress::-webkit-progress-bar { background: var(--track); border-radius: 99px; }
+#status-progress::-webkit-progress-value { background: var(--accent); border-radius: 99px; }
+#status-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
+#status-notice {
+	display: none; max-width: 86vw; padding: 16px 20px; border-radius: 18px; background: var(--surface);
+	color: var(--ink); white-space: pre-line; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+@media (prefers-reduced-motion: reduce) { #logo .ring, #logo .fish { animation: none; } }
+		</style>
+		
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+		<div id="status">
+			<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="168" height="168" aria-hidden="true">
+				<defs>
+					<linearGradient id="seiche-bg" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#e9f8f4"/>
+						<stop offset="1" stop-color="#bfe7de"/>
+					</linearGradient>
+				</defs>
+				<rect width="512" height="512" rx="112" fill="url(#seiche-bg)"/>
+				<g class="ring"><circle cx="200" cy="214" r="118" fill="#2a8c86" fill-opacity="0.08" stroke="#2a8c86" stroke-width="22"/></g>
+				<g class="ring"><circle cx="318" cy="306" r="104" fill="#ef7d5a" fill-opacity="0.08" stroke="#ef7d5a" stroke-width="22"/></g>
+				<circle cx="200" cy="214" r="17" fill="#1d5e5a"/>
+				<circle cx="318" cy="306" r="17" fill="#b9553a"/>
+				<g class="fish"><g transform="translate(321 203) rotate(-28)">
+					<path d="M-44 0 C-26 -26 18 -28 36 0 C18 28 -26 26 -44 0 Z" fill="#f59a3d"/>
+					<path d="M30 0 L62 -22 L56 0 L62 22 Z" fill="#f59a3d"/>
+					<path d="M-20 -14 C-6 -22 12 -20 20 -10 C6 -8 -8 -8 -20 -14 Z" fill="#ffffff" fill-opacity="0.85"/>
+					<circle cx="-28" cy="-5" r="5" fill="#1d3b38"/>
+				</g></g>
+			</svg>
+			<div id="brand">
+				<h1>seiche</h1>
+				<p>every ring touches a fish</p>
+			</div>
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<script src="gate.js" data-game="Seiche"></script>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":913352,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		(window.chaosmosGate || Promise.resolve()).then(() => {
+			setStatusMode('progress');
+			engine.startGame({
+				'onProgress': function (current, total) {
+					if (current > 0 && total > 0) {
+						statusProgress.value = current;
+						statusProgress.max = total;
+					} else {
+						statusProgress.removeAttribute('value');
+						statusProgress.removeAttribute('max');
+					}
+				},
+			}).then(() => {
+				setStatusMode('hidden');
+			}, displayFailureNotice);
+		});
+	}
+}());
+		</script>
+	</body>
+</html>
+
