@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+		<meta name="theme-color" content="#ffeedb">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Sunwise">
+		<meta name="description" content="Sunwise: hold anywhere, and your thumb sets how wide your planets swing round the star.">
+		<meta name="robots" content="noindex">
+		<!-- The studio's two cookie-free visit counters, as on chaosmos.studio. -->
+		<script async data-goatcounter="https://chaosmos.goatcounter.com/count" src="https://gc.zgo.at/count.js"></script>
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="284549b9-2ef0-4485-ae9d-2e2e85f7e0ac" data-domains="chaosmos.studio"></script>
+		<link rel="icon" href="favicon.ico" sizes="any">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+		<title>Sunwise</title>
+		<style>
+/* The Godot boilerplate below is a known-good 4.7 shell with one change: it starts the engine once the
+   gate (gate.js) lets it. Plumb, Carillon, Apsis and Pyxis each put a small CSS version of their own toy
+   here. A dark --accent needs a light --accent-ink for the gate's button. */
+@font-face {
+	font-family: 'Outfit';
+	src: url('Outfit-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-display: block;
+}
+:root { --paper: #fdf1e6; --surface: #fffbf6; --ink: #1f2240; --muted: #6b6e8a; --track: #ecdccd; --accent: #f06a1a; }
+* { box-sizing: border-box; }
+html, body {
+	margin: 0; padding: 0; height: 100%; overflow: hidden; background: linear-gradient(#ffeedb, #d4e5fc);
+	font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+}
+#canvas { display: block; width: 100%; height: 100%; border: 0; }
+#canvas:focus { outline: none; }
+#status {
+	position: fixed; inset: 0; z-index: 10; visibility: visible; background: linear-gradient(#ffeedb, #d4e5fc);
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+}
+#logo { width: min(170px, 42vw); height: auto; filter: drop-shadow(0 12px 24px rgba(240, 106, 26, 0.22)); }
+#planets { transform-origin: 256px 256px; animation: orbit 6s linear infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+#brand h1 { margin: 0; font-size: clamp(64px, 20vw, 130px); font-weight: 300; color: var(--ink); line-height: 1; text-align: center; }
+#brand p { margin: 4px 0 0; text-align: center; font-size: clamp(16px, 4.4vw, 22px); color: var(--muted); }
+#status-progress {
+	appearance: none; -webkit-appearance: none; border: 0;
+	width: min(300px, 76vw); height: 16px; border-radius: 99px; display: block;
+}
+#status-progress::-webkit-progress-bar { background: var(--track); border-radius: 99px; }
+#status-progress::-webkit-progress-value { background: var(--accent); border-radius: 99px; }
+#status-progress::-moz-progress-bar { background: var(--accent); border-radius: 99px; }
+#status-notice {
+	display: none; max-width: 86vw; padding: 16px 20px; border-radius: 18px; background: var(--surface);
+	color: var(--ink); white-space: pre-line; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+@media (prefers-reduced-motion: reduce) { #planets { animation: none; } }
+		</style>
+		
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+		<div id="status">
+			<!-- The logo, web/logo.svg inlined so it shows before anything else loads. Its planets go round. -->
+			<svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+				<defs>
+					<linearGradient id="sw-bg" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stop-color="#ffeedb"/>
+						<stop offset="1" stop-color="#d4e5fc"/>
+					</linearGradient>
+					<radialGradient id="sw-glow" cx="0.5" cy="0.5" r="0.5">
+						<stop offset="0" stop-color="#ff9a2e" stop-opacity="0.55"/>
+						<stop offset="0.55" stop-color="#fa5a1e" stop-opacity="0.18"/>
+						<stop offset="1" stop-color="#fa5a1e" stop-opacity="0"/>
+					</radialGradient>
+					<radialGradient id="sw-star" cx="0.42" cy="0.4" r="0.6">
+						<stop offset="0" stop-color="#fff6b0"/>
+						<stop offset="0.5" stop-color="#ffb02e"/>
+						<stop offset="1" stop-color="#f06a1a"/>
+					</radialGradient>
+				</defs>
+				<rect width="512" height="512" rx="112" fill="url(#sw-bg)"/>
+				<circle cx="256" cy="256" r="170" fill="url(#sw-glow)"/>
+				<circle cx="256" cy="256" r="150" fill="none" stroke="#1f2240" stroke-opacity="0.18" stroke-width="6"/>
+				<g id="planets">
+					<path d="M120 300 A150 150 0 0 1 112 230" fill="none" stroke="#e8483a" stroke-opacity="0.35" stroke-width="14" stroke-linecap="round"/>
+					<path d="M392 212 A150 150 0 0 1 400 282" fill="none" stroke="#1fb39a" stroke-opacity="0.35" stroke-width="14" stroke-linecap="round"/>
+					<circle cx="108" cy="220" r="26" fill="#e8483a"/>
+					<circle cx="100" cy="212" r="8" fill="#ffffff" fill-opacity="0.6"/>
+					<circle cx="404" cy="292" r="26" fill="#1fb39a"/>
+					<circle cx="396" cy="284" r="8" fill="#ffffff" fill-opacity="0.6"/>
+				</g>
+				<circle cx="256" cy="256" r="74" fill="url(#sw-star)"/>
+			</svg>
+			<div id="brand">
+				<h1>sunwise</h1>
+				<p>guard the star with your planets</p>
+			</div>
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+		</div>
+		<script src="gate.js" data-game="Sunwise"></script>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":2035380,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		(window.chaosmosGate || Promise.resolve()).then(() => {
+			setStatusMode('progress');
+			engine.startGame({
+				'onProgress': function (current, total) {
+					if (current > 0 && total > 0) {
+						statusProgress.value = current;
+						statusProgress.max = total;
+					} else {
+						statusProgress.removeAttribute('value');
+						statusProgress.removeAttribute('max');
+					}
+				},
+			}).then(() => {
+				setStatusMode('hidden');
+			}, displayFailureNotice);
+		});
+	}
+}());
+		</script>
+	</body>
+</html>
+
