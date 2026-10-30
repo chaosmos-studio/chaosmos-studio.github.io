@@ -40,13 +40,13 @@ html, body {
 }
 #brand h1 { margin: 0; font-size: clamp(72px, 24vw, 150px); font-weight: 300; color: var(--ink); line-height: 1; }
 #brand p { margin: 4px 0 0; text-align: center; font-size: clamp(16px, 4.4vw, 22px); color: var(--muted); }
-/* The logo (web/logo.svg), its gold panel sliding aside and back while the game loads. */
+/* The logo (web/logo.svg), its lid sliding further out of the gap and back while the game loads. */
 #toy { width: clamp(150px, 42vw, 200px); height: clamp(150px, 42vw, 200px); filter: drop-shadow(0 12px 24px rgba(59,42,34,.22)); }
 #toy svg { width: 100%; height: 100%; display: block; }
 #toy .slide { animation: slide 2.8s ease-in-out infinite; }
 @keyframes slide {
 	0%, 20% { transform: translateX(0); }
-	45%, 70% { transform: translateX(-60px); }
+	45%, 70% { transform: translateX(34px); }
 	95%, 100% { transform: translateX(0); }
 }
 #status-progress {
@@ -78,25 +78,30 @@ html, body {
 			</div>
 			<div id="toy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
 				<defs>
-					<linearGradient id="hk-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ecdc"/><stop offset="1" stop-color="#dccdb2"/></linearGradient>
-					<pattern id="hk-zig" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#ede0c4"/><path d="M0 40 L20 0 L40 40 Z" fill="#9a4a33"/></pattern>
-					<pattern id="hk-dia" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#3b2a22"/><path d="M20 4 L36 20 L20 36 L4 20 Z" fill="#b86f3a"/><path d="M20 13 L27 20 L20 27 L13 20 Z" fill="#ede0c4"/></pattern>
-					<linearGradient id="hk-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ecc95c"/><stop offset="1" stop-color="#c99b2e"/></linearGradient>
-					<clipPath id="hk-floor"><rect x="120" y="120" width="272" height="272" rx="10"/></clipPath>
+					<linearGradient id="hk-shu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c95533"/><stop offset="1" stop-color="#a43a24"/></linearGradient>
+					<g id="hk-scale"><circle r="70" fill="#b8472b"/><circle r="63" fill="none" stroke="#ecc866" stroke-width="7"/><circle r="43.4" fill="none" stroke="#ecc866" stroke-width="7"/><circle r="23.8" fill="none" stroke="#ecc866" stroke-width="7"/></g>
+					<pattern id="hk-waves" width="140" height="70" patternUnits="userSpaceOnUse" y="-17.5"><use href="#hk-scale" x="0" y="0"/><use href="#hk-scale" x="140" y="0"/><use href="#hk-scale" x="70" y="35"/><use href="#hk-scale" x="0" y="70"/><use href="#hk-scale" x="140" y="70"/></pattern>
+					<radialGradient id="hk-glow"><stop offset="0" stop-color="#ecc85c" stop-opacity="0.95"/><stop offset="1" stop-color="#ecc85c" stop-opacity="0"/></radialGradient>
+					<g id="hk-crest" fill="#ecc85c"><circle cx="0" cy="-16.7" r="12.4"/><circle cx="15.9" cy="-5.2" r="12.4"/><circle cx="9.8" cy="13.5" r="12.4"/><circle cx="-9.8" cy="13.5" r="12.4"/><circle cx="-15.9" cy="-5.2" r="12.4"/><circle r="8" fill="#1c100e"/><circle r="3.7"/></g>
+					<clipPath id="hk-round"><rect width="512" height="512" rx="112"/></clipPath>
 				</defs>
-				<rect width="512" height="512" rx="112" fill="url(#hk-bg)"/>
-				<ellipse cx="256" cy="420" rx="170" ry="22" fill="#3b2a22" fill-opacity="0.18"/>
-				<rect x="96" y="96" width="320" height="320" rx="30" fill="#6e4a30"/>
-				<rect x="120" y="120" width="272" height="272" rx="10" fill="#3b2a22"/>
-				<rect x="120" y="120" width="272" height="80" fill="url(#hk-zig)"/>
-				<rect x="120" y="208" width="272" height="80" fill="url(#hk-dia)"/>
-				<g clip-path="url(#hk-floor)"><g class="slide">
-					<rect x="120" y="296" width="190" height="96" fill="url(#hk-gold)"/>
-					<path d="M244 328 L262 344 L244 360" fill="none" stroke="#6e4a30" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-					<circle cx="176" cy="344" r="14" fill="#6e4a30" fill-opacity="0.35"/>
-				</g></g>
-				<rect x="310" y="296" width="82" height="96" fill="#1f1510"/>
-				<rect x="310" y="296" width="10" height="96" fill="#f6d77a" fill-opacity="0.75"/>
+				<g clip-path="url(#hk-round)">
+					<rect width="512" height="512" fill="url(#hk-shu)"/>
+					<rect width="512" height="512" fill="url(#hk-waves)"/>
+				</g>
+				<circle cx="256" cy="264" r="196" fill="#3c140a" fill-opacity="0.3"/>
+				<circle cx="256" cy="256" r="196" fill="#c29334"/>
+				<circle cx="256" cy="256" r="185" fill="#faf4e9"/>
+				<rect x="132" y="140" width="220" height="220" rx="22" fill="#6e4a30"/>
+				<rect x="136" y="144" width="212" height="10" rx="6" fill="#8e6340"/>
+				<rect x="152" y="160" width="180" height="180" rx="6" fill="#2e1f19"/>
+				<ellipse cx="352" cy="250" rx="80" ry="94" fill="url(#hk-glow)"/>
+				<rect x="332" y="207" width="20" height="86" fill="#ecc85c"/>
+				<g class="slide">
+					<rect x="226" y="219" width="208" height="78" rx="12" fill="#280c06" fill-opacity="0.43"/>
+					<rect x="222" y="211" width="208" height="78" rx="12" fill="#1c100e" stroke="#ecc85c" stroke-width="6"/>
+					<use href="#hk-crest" x="326" y="250"/>
+				</g>
 			</svg></div>
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
@@ -104,7 +109,7 @@ html, body {
 		<script src="gate.js" data-game="Hako"></script>
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":1558840,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":2019144,"index.wasm":17150230},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
