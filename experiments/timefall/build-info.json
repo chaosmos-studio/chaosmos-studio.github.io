@@ -1,0 +1,16 @@
+{
+  "wasm_sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656",
+  "wasm_size": 39509339,
+  "parts": [
+    "index.wasm.part0",
+    "index.wasm.part1",
+    "index.wasm.part2",
+    "index.wasm.part3",
+    "index.wasm.part4",
+    "index.wasm.part5",
+    "index.wasm.part6",
+    "index.wasm.part7",
+    "index.wasm.part8",
+    "index.wasm.part9"
+  ]
+}
