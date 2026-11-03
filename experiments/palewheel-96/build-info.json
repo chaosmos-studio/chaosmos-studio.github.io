@@ -1,0 +1,27 @@
+{
+  "index.wasm": {
+    "parts": [
+      "index.wasm.part0",
+      "index.wasm.part1",
+      "index.wasm.part2",
+      "index.wasm.part3",
+      "index.wasm.part4",
+      "index.wasm.part5",
+      "index.wasm.part6",
+      "index.wasm.part7",
+      "index.wasm.part8",
+      "index.wasm.part9"
+    ],
+    "size": 39509339,
+    "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656",
+    "content_type": "application/wasm"
+  },
+  "index.pck": {
+    "parts": [
+      "index.pck.part0"
+    ],
+    "size": 1474964,
+    "sha256": "8775649c3781d0bb20dbe6f0988a956e2669e104ba9c06d707d0c13f3091bedd",
+    "content_type": "application/octet-stream"
+  }
+}
