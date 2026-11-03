@@ -1,7 +1,7 @@
 // Stream the engine and game pack from static-host-friendly chunks.
 (() => {
   const nativeFetch = window.fetch.bind(window);
-  const assets = {"index.wasm": {"parts": ["index.wasm.part0", "index.wasm.part1", "index.wasm.part2", "index.wasm.part3", "index.wasm.part4", "index.wasm.part5", "index.wasm.part6", "index.wasm.part7", "index.wasm.part8", "index.wasm.part9"], "size": 39509339, "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656", "content_type": "application/wasm"}, "index.pck": {"parts": ["index.pck.part0"], "size": 1474964, "sha256": "8775649c3781d0bb20dbe6f0988a956e2669e104ba9c06d707d0c13f3091bedd", "content_type": "application/octet-stream"}};
+  const assets = {"index.wasm": {"parts": ["index.wasm.part0", "index.wasm.part1", "index.wasm.part2", "index.wasm.part3", "index.wasm.part4", "index.wasm.part5", "index.wasm.part6", "index.wasm.part7", "index.wasm.part8", "index.wasm.part9"], "size": 39509339, "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656", "content_type": "application/wasm"}, "index.pck": {"parts": ["index.pck.part0"], "size": 1474308, "sha256": "7dd6b68b3b08a25c0e5b0ff49dd5625931c3f154f0336027c4a969ab452afab4", "content_type": "application/octet-stream"}};
   const base = new URL('.', document.currentScript.src);
   window.fetch = async function(resource, options) {
     const url = new URL(typeof resource === 'string' ? resource : resource.url || String(resource), location.href);

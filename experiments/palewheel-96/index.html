@@ -22,14 +22,14 @@ button{border:3px solid #fff0bc;background:#eaa250;color:#17142b;padding:12px 20
 
 </head>
 <body>
-<canvas id="canvas" tabindex="0" aria-label="Palewheel 96. Run, jump and turn gravity to guide the mechanic through the engine.">Canvas is required to play Palewheel 96.</canvas>
+<canvas id="canvas" tabindex="0" aria-label="Palewheel 96. Move with A and D or the arrow keys, jump with W or Space, crouch with S, and turn gravity with Shift or a click. On touchscreens, slide to move, swipe up to jump, swipe down to crouch, and tap to turn gravity.">Canvas is required to play Palewheel 96.</canvas>
 <div id="rotate">Turn your phone sideways to play Palewheel 96.</div>
 <div id="loading" role="status"><div><h1>PALEWHEEL 96</h1><p id="status">Waking the turbine...</p><progress id="progress" max="1" value="0"></progress><p id="error"></p><button id="retry" hidden onclick="location.reload()">Try again</button></div></div>
 <noscript>Enable JavaScript to play Palewheel 96.</noscript>
-<script src="wasm-loader.js?v=8775649c3781"></script>
+<script src="wasm-loader.js?v=7dd6b68b3b08"></script>
 <script src="index.js"></script>
 <script>
-const engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":1474964,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+const engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":1474308,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
 const loading = document.getElementById('loading');
 function fail(error) {
   document.getElementById('status').textContent = 'The engine could not start.';
