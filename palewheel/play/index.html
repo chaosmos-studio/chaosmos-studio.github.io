@@ -8,7 +8,9 @@
 <link rel="icon" href="data:,">
 <title>Palewheel | Chaosmos</title>
 <style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f1e1c8;color:#493a37;font:16px system-ui,sans-serif}
+@font-face{font-family:Averia;src:url(AveriaSansLibre-Regular.ttf) format('truetype');font-weight:400}
+@font-face{font-family:Averia;src:url(AveriaSansLibre-Bold.ttf) format('truetype');font-weight:700}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f1e1c8;color:#493a37;font:16px Averia,sans-serif}
 canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
 #loading{position:fixed;inset:0;z-index:2;display:grid;place-items:center;box-sizing:border-box;padding:24px;background:repeating-linear-gradient(90deg,#ead9bf 0px,#ead9bf 3px,#eedec7 4px,#eedec7 7px);text-align:center}
 #loading>div{position:relative;width:min(480px,86vw);padding:28px 34px 34px;box-sizing:border-box;border:3px solid #8d6b56;border-radius:24px;background:#f7edda;box-shadow:9px 12px 0 #8c725d45}
@@ -33,7 +35,7 @@ h1{font-size:clamp(28px,7vw,42px);letter-spacing:.06em;margin:0 0 8px;line-heigh
 .meter span{display:block;width:0;height:100%;border-radius:20px;background:repeating-linear-gradient(115deg,#ae6554 0 17px,#cc8570 18px 27px)}
 #bytes{margin:7px 0 0;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:#725243}
 #error{max-width:28em;white-space:pre-wrap}
-button{border:2px dashed #f7edda;border-radius:10px;background:#a85648;color:#f7edda;padding:12px 20px;font:700 16px system-ui,sans-serif}
+button{border:2px dashed #f7edda;border-radius:10px;background:#a85648;color:#f7edda;padding:12px 20px;font:700 16px Averia,sans-serif}
 #rotate{display:none;position:fixed;inset:0;align-items:center;justify-content:center;padding:32px;background:#f1e1c8;color:#493a37;text-align:center;font-size:22px;z-index:3}
 #fullscreen{position:fixed;right:16px;top:clamp(12px,1.8vw,24px);z-index:4;display:none;place-items:center;width:clamp(48px,5.6vw,72px);height:clamp(48px,5.6vw,72px);padding:0;border:3px solid #7d5e50;border-radius:15px;background:#f5e7d1;color:#493a37;box-shadow:4px 5px 0 #493a3745;cursor:pointer}
 #fullscreen svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
@@ -56,10 +58,10 @@ window.palewheelDownload = (received, total) => {
   document.getElementById('status').textContent = received < total ? 'Stitching the pieces together...' : 'Waking the world...';
 };
 </script>
-<script src="wasm-loader.js?v=574ffeffa9a0"></script>
+<script src="wasm-loader.js?v=7968d0be9f41"></script>
 <script src="index.js"></script>
 <script>
-const engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":27409580,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+const engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":29769232,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
 const loading = document.getElementById('loading');
 const fullscreen = document.getElementById('fullscreen');
 window.palewheelMenuState = visible => {
