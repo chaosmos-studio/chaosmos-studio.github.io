@@ -1,7 +1,7 @@
 // Stream the engine and game pack from static-host-friendly chunks.
 (() => {
   const nativeFetch = window.fetch.bind(window);
-  const assets = {"index.wasm": {"parts": ["index.wasm.part0", "index.wasm.part1", "index.wasm.part2", "index.wasm.part3", "index.wasm.part4", "index.wasm.part5", "index.wasm.part6", "index.wasm.part7", "index.wasm.part8", "index.wasm.part9"], "size": 39509339, "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656", "content_type": "application/wasm"}, "index.pck": {"parts": ["index.pck.part0", "index.pck.part1", "index.pck.part2", "index.pck.part3", "index.pck.part4", "index.pck.part5", "index.pck.part6", "index.pck.part7", "index.pck.part8"], "size": 35761720, "sha256": "779966c229c8bbb5f864d65b9e213230b6b8d4e54f035430caaa4b6efb61f25c", "content_type": "application/octet-stream"}};
+  const assets = {"index.wasm": {"parts": ["index.wasm.part0", "index.wasm.part1", "index.wasm.part2", "index.wasm.part3", "index.wasm.part4", "index.wasm.part5", "index.wasm.part6", "index.wasm.part7", "index.wasm.part8", "index.wasm.part9"], "size": 39509339, "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656", "content_type": "application/wasm"}, "index.pck": {"parts": ["index.pck.part0", "index.pck.part1", "index.pck.part2", "index.pck.part3", "index.pck.part4", "index.pck.part5", "index.pck.part6", "index.pck.part7", "index.pck.part8"], "size": 35761720, "sha256": "75f3fb83191f110cb35fbd59165d0aeab570f94fe52a470534657678c3922c43", "content_type": "application/octet-stream"}};
   const base = new URL('.', document.currentScript.src);
   const received = Object.fromEntries(Object.keys(assets).map(name => [name, 0]));
   const total = Object.values(assets).reduce((sum, asset) => sum + asset.size, 0);
@@ -14,11 +14,24 @@
     const asset = assets[name];
     const stream = new ReadableStream({async start(controller) {
       try {
-        for (const part of asset.parts) {
-          const partUrl = new URL(part, base);
+        const prefetchWindow = 2;
+        const pending = new Map();
+        const requestPart = index => {
+          const partUrl = new URL(asset.parts[index], base);
           partUrl.searchParams.set('v', asset.sha256.slice(0, 12));
-          const response = await nativeFetch(partUrl, options);
+          return nativeFetch(partUrl, options).then(response => ({response}), error => ({error}));
+        };
+        for (let index = 0; index < Math.min(prefetchWindow, asset.parts.length); index++) {
+          pending.set(index, requestPart(index));
+        }
+        for (let index = 0; index < asset.parts.length; index++) {
+          const result = await pending.get(index);
+          pending.delete(index);
+          if (result.error) throw result.error;
+          const response = result.response;
           if (!response.ok) throw new Error('Game download failed: ' + response.status);
+          const next = index + prefetchWindow;
+          if (next < asset.parts.length) pending.set(next, requestPart(next));
           const reader = response.body.getReader();
           while (true) {
             const {done, value} = await reader.read();
