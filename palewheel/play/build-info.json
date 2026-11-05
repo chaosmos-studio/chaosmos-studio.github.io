@@ -14,7 +14,13 @@
     ],
     "size": 39509339,
     "sha256": "7eda98958eb09135a1acb54a4323a00b1a55af1997f15fa1cdc2b93e3df46656",
-    "content_type": "application/wasm"
+    "content_type": "application/wasm",
+    "gzip_parts": [
+      "index.wasm.gz.part0",
+      "index.wasm.gz.part1",
+      "index.wasm.gz.part2"
+    ],
+    "gzip_size": 10052173
   },
   "index.pck": {
     "parts": [
@@ -26,12 +32,10 @@
       "index.pck.part5",
       "index.pck.part6",
       "index.pck.part7",
-      "index.pck.part8",
-      "index.pck.part9",
-      "index.pck.part10"
+      "index.pck.part8"
     ],
-    "size": 43932216,
-    "sha256": "231a41d1d254590679e69145aa3282f8486a9c6ffefa0b839b1121f9cd42dddf",
+    "size": 35076112,
+    "sha256": "535969834e34e849ef7c464e9cc7814017286966f548161d56716bc0d269ef12",
     "content_type": "application/octet-stream"
   }
 }
