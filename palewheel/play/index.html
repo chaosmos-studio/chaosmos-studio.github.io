@@ -30,7 +30,7 @@ h1{font:clamp(39px,5.5vw,70px) DarnDisplay,sans-serif;margin:0;line-height:1.05}
 .load-dancer img:nth-child(2){animation-delay:-4.8s}.load-dancer img:nth-child(3){animation-delay:-3.2s}.load-dancer img:nth-child(4){animation-delay:-1.6s}
 @keyframes pose{0%,24.9%{opacity:1}25%,100%{opacity:0}}
 .meter{height:20px;margin:22px 0 8px;overflow:hidden;border:3px solid #725243;border-radius:20px;background:#e7d3b7;text-align:left;box-shadow:inset 0 3px 4px #806b5b36}
-.meter span{display:block;width:0;height:100%;border-radius:20px;background:repeating-linear-gradient(115deg,#ae6554 0 17px,#cc8570 18px 27px);transition:width .14s linear}
+.meter span{display:block;width:0;height:100%;border-radius:20px;background:repeating-linear-gradient(115deg,#ae6554 0 17px,#cc8570 18px 27px)}
 #bytes{margin:7px 0 0;font-size:16px;font-variant-numeric:tabular-nums;color:#725243}
 #error{max-width:28em;white-space:pre-wrap}
 button{border:2px dashed #f7edda;border-radius:10px;background:#a85648;color:#f7edda;padding:12px 20px;font:18px Threadline,sans-serif;cursor:url(sewing_cursor.png) 5 5,pointer}
@@ -54,7 +54,7 @@ window.palewheelDownload = (received, total) => {
   document.getElementById('status').textContent = received < total ? 'Stitching the pieces together...' : 'Waking the world...';
 };
 </script>
-<script src="wasm-loader.js?v=0214bf5e2554"></script>
+<script src="wasm-loader.js?v=2278b92e0cd2"></script>
 <script src="index.js"></script>
 <script>
 const engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":43930040,"index.wasm":39509339},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
