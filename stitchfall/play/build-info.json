@@ -29,14 +29,10 @@
       "index.pck.part2",
       "index.pck.part3",
       "index.pck.part4",
-      "index.pck.part5",
-      "index.pck.part6",
-      "index.pck.part7",
-      "index.pck.part8",
-      "index.pck.part9"
+      "index.pck.part5"
     ],
-    "size": 38479136,
-    "sha256": "e1c6f8fc2f4ce49678bf783adf31fccc4f4ac19e16113d40dcce159538bb1150",
+    "size": 23059376,
+    "sha256": "628eec080b8dead9c18b1422e301738541fc79bd21cdf97b20c02b05d448f28d",
     "content_type": "application/octet-stream"
   }
 }
