@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://chaosmos.studio/sitemap-index.xml
-Sitemap: https://chaosmos.studio/sitemap-images.xml
