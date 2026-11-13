@@ -2,7 +2,7 @@
 const test = null;
 const itch = "https://chaosmos-studio.itch.io/apsis";
 const home = "/apsis/";
-const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatcounterScript":"https://gc.zgo.at/count.js","umamiScript":"https://cloud.umami.is/script.js","umamiWebsite":"284549b9-2ef0-4485-ae9d-2e2e85f7e0ac","googleAnalytics":"G-VNNB84ZZ17","domain":"chaosmos.studio"};
+const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatcounterScript":"https://gc.zgo.at/count.js","umamiScript":"https://cloud.umami.is/script.js","umamiWebsite":"284549b9-2ef0-4485-ae9d-2e2e85f7e0ac","googleAnalytics":"G-VNNB84ZZ17","domain":"chaosmos.studio","previews":"/pr-previews/"};
 
       const asked = new URLSearchParams(location.search).get("from") ?? "";
       const from = asked.replace(/[^\w.-]/g, "").slice(0, 40) || "direct";
@@ -24,7 +24,7 @@ const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatco
           document.head.appendChild(script);
         });
       const counting =
-        location.hostname === counters.domain
+        location.hostname === counters.domain && !location.pathname.startsWith(counters.previews)
           ? Promise.all([
               counted(counters.goatcounterScript, {
                 "data-goatcounter": counters.goatcounter,
