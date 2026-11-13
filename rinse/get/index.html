@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" data-astro-cid-gwbtivf5><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Get Rinse</title><meta name="description" content="Pour water to wash every tile clean before the tank runs dry. Dirty water runs down onto whatever is below. Get Rinse on your phone."><meta name="robots" content="noindex"><link rel="canonical" href="https://chaosmos.studio/rinse/"><meta property="og:type" content="website"><meta property="og:site_name" content="Chaosmos"><meta property="og:title" content="Get Rinse"><meta property="og:description" content="Pour water to wash every tile clean before the tank runs dry. Dirty water runs down onto whatever is below. Get Rinse on your phone."><meta property="og:url" content="https://chaosmos.studio/rinse/"><meta property="og:image" content="https://chaosmos.studio/og/games/rinse/index.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Rinse, a puzzle game by Chaosmos"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@chaosmos_studio"><meta name="twitter:image" content="https://chaosmos.studio/og/games/rinse/index.png"><meta name="twitter:image:alt" content="Rinse, a puzzle game by Chaosmos"><link rel="icon" href="/assets/apps/rinse.webp"><script>(function(){const store = null;
 const test = "/test/#rinse";
-const web = "/rinse/play/";
+const itch = undefined;
 const home = "/rinse/";
 const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatcounterScript":"https://gc.zgo.at/count.js","umamiScript":"https://cloud.umami.is/script.js","umamiWebsite":"284549b9-2ef0-4485-ae9d-2e2e85f7e0ac","domain":"chaosmos.studio"};
 
@@ -10,7 +10,7 @@ const counters = {"goatcounter":"https://chaosmos.goatcounter.com/count","goatco
       const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
       const android = /Android/i.test(ua);
       let to = `${home}?from=${from}`;
-      if (ios) to = web;
+      if (ios && itch) to = itch;
       else if (android && store) to = `${store}&referrer=${encodeURIComponent(`utm_source=${from}&utm_medium=get`)}`;
       else if (android && test) to = test;
       // Each counter sends its visit in a way that outlives the page, so the hop waits only for it to start.
